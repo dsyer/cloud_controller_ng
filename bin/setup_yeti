@@ -6,6 +6,9 @@ require "yajl"
 module YetiSetup
   def self.setup(uaa_url, uaa_cc_secret, cc_url, cc_admin_email, cc_admin_password, num_users, email, password, org_name, space_name)
     check_uaac_version
+    with_cc_uaa_client(uaa_cc_secret) do
+      run "uaac user add #{cc_admin_email} --email #{cc_admin_email} --given_name yeti --family_name adminuser  -p #{cc_admin_password}"
+    end
     create_user(uaa_url, uaa_cc_secret, cc_url, cc_admin_email, cc_admin_password, email, password, org_name, space_name)
     info = create_users(uaa_url, uaa_cc_secret, cc_url, cc_admin_email, cc_admin_password, num_users, email, password, org_name, space_name)
     puts YAML.dump("parallel" => info)
@@ -123,7 +126,7 @@ module YetiSetup
     output = run "uaac target"
     orig_target = output[/Target: ([^,]*)?/, 1]
     output = run "uaac target #{uaa_url}"
-    error unless output =~ /Target: #{uaa_url}/
+    error unless output =~ /Target: .*#{uaa_url}/
     begin
       yield if block_given?
     ensure

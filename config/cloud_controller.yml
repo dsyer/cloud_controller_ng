@@ -37,10 +37,13 @@ redis:
   port: 5454
   password: secret
 
+login:
+  url: "http://localhost:8080/login"
+
 uaa:
   url: "http://localhost:8080/uaa"
   resource_id: "cloud_controller"
-  symmetric_secret: "tokensecret"
+  symmetric_secret: "tokenkey"
 
 cc_partition: ng
 
